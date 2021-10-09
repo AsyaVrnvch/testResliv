@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<head>
+    <title>test2</title>
+    <style>
+        p{
+            margin:5px 10px;
+        }
+        h3{
+            margin: 10px;
+        }
+        div{
+            width: 10%;
+            border-bottom: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <div id="size">
+            <h3>Size</h3>
+            <p><input type="radio" id='size1' name='size' value="S">S</p>
+            <p><input type="radio" id='size2' name='size' value="M">M</p>
+            <p><input type="radio" id='size3' name='size' value="L">L</p>
+        </div>
+        <div id="color">
+            <h3>Color</h3>
+            <p><input type="checkbox" id='color1' name='color' value="1">1</p>
+            <p><input type="checkbox" id='color2' name='color' value="2">2</p>
+            <p><input type="checkbox" id='color3' name='color' value="3">3</p>
+            <p><input type="checkbox" id='color4' name='color' value="4">4</p>
+            <p><input type="checkbox" id='color5' name='color' value="5">5</p>
+        </div>
+        <div id="manufacturer">
+            <h3>Manufacturer</h3>
+            <p><select multiple="multiple" name="manufacturer" id="manufactura">
+                <option>aaa</option>
+                <option>b&c</option>
+                <option>ddd</option>
+                <option>eee</option>
+            </select></p>
+        </div>
+        <div id="sale">
+            <h3>Sale</h3>
+            <p><input type="checkbox" name="sale"></p>
+        </div>
+    </form>
+    <script>
+        let url = new URL('http://xn--_-9sbkerkljdd4o/filter?size=M&color=1&color=2&manufacturer=aaa&manufacturer=ddd');
+        console.log('initialURL:', url.href);
+        let data = new URLSearchParams(url.search);
+        let size = data.get('size');
+        let color = data.getAll('color');
+        let manufacturer = data.getAll('manufacturer');
+
+        const sizeRadio =  document.getElementsByName('size'); 
+        for(let i = 0 ; i < sizeRadio.length; i++){
+            sizeRadio[i].addEventListener('input',updateURLSize);
+            if(sizeRadio[i].value == size) sizeRadio[i].checked = true;
+        }
+
+        const colorCheckbox = document.getElementsByName('color'); 
+        for(let i = 0 ; i < colorCheckbox.length; i++){
+            colorCheckbox[i].addEventListener('input',updateURLColor);
+            if(color.includes(colorCheckbox[i].value)) colorCheckbox[i].checked = true;
+        }
+
+        const manufacturerOptions = document.querySelectorAll('[name="manufacturer"] option');
+        for(let i = 0 ; i < manufacturerOptions.length; i++){
+            if(manufacturer.includes(manufacturerOptions[i].value)) {
+                manufacturerOptions[i].selected = true;
+            }
+        }
+        document.getElementById('manufactura').addEventListener('input',updateURLManufacturer);
+
+        function updateURLSize(){
+            data.set('size',this.value);
+            url.search=data;
+            console.log('updated URL:',url.href)
+        }
+
+        function updateURLColor(){
+            data.delete('color');
+            colorCheckbox.forEach( item => {
+                if(item.checked) data.append('color',item.value);
+            });
+            url.search=data;
+            console.log('updated URL:',url.href)
+        }
+
+        function updateURLManufacturer(){
+            data.delete('manufacturer');
+            manufacturerOptions.forEach(item => {
+                if(item.selected) data.append('manufacturer',item.value)
+            })
+            url.search=data;
+            console.log('updated URL:',url.href)
+        }
+
+    </script>
+</body>
+</html>

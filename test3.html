@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head>
+    <title>test1</title>
+    <style>
+        
+    </style>
+</head>
+<body>
+    <label>Отправить запросы</label>
+    <button onclick=send()>Отправить</button>
+
+    <script>
+        async function send(){
+            Promise.all([
+                new Promise(resolve => setTimeout(() => resolve(fetch('https://reqres.in/api/users?per_page=12')), 3000)),
+                new Promise(resolve => setTimeout(() => resolve(fetch('https://api.github.com/repos/javascript-tutorial/en.javascript.info/commits')), 1000)),
+            ]).then(responses => {
+                Promise.all(responses.map(r => r.json()))
+                    .then(data => {
+                        data.forEach(item => {
+                            console.log(item)
+                        })
+                        console.log('Оба ответа получены')
+                    })
+            });
+            //Для наглядности использую setTimeout, код без использования этой функции:
+            // Promise.all([
+            //     fetch('https://reqres.in/api/users?per_page=12'),
+            //     fetch('https://api.github.com/repos/javascript-tutorial/en.javascript.info/commits'),
+            // ]).then(responses => {
+            //     Promise.all(responses.map(r => r.json()))
+            //         .then(data => {
+            //             data.forEach(item => {
+            //                 console.log(item)
+            //             })
+            //             console.log('Оба ответа получены')
+            //         })
+                
+            // });
+        }
+    </script>
+</body>
+</html>

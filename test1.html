@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+    <title>test1</title>
+    <style>
+        .red {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" name="name" id="name_input" value="Xxxx" oninput="changeClass(value)">
+    
+    <script>
+        let elem = document.getElementById("name_input");
+        let initialValue = elem.value;
+        console.log(initialValue);
+
+        function changeClass(value){
+            if(value !== initialValue){
+                elem.classList.add("red");
+            }
+            else{
+                elem.classList.remove("red");
+            }
+        }
+
+    </script>
+</body>
+</html>

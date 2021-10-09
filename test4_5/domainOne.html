@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<head>
+    <title>test1</title>
+    <style>
+        body{
+            font-size: 24px;
+        }
+        div{
+            margin:10px;
+        }
+        button, input{
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h3>Страница 1</h3>
+    <label>Получить данные из хранилища domainTwo</label>
+    <input type="text" id='getKey'/>
+    <button onclick="query('get')">Получить</button><br/>
+    <p>Занести данные в localStorage domainTwo:</p>
+    <label>Ключ:</label>
+    <input type="text" id='addKey'/>
+    <label>Значение:</label>
+    <input type="text" id='addData'/>
+    <button onclick="query('set')">Занести</button><br/>
+    <p>Удалить данные:</p>
+    <label>Key:</label>
+    <input type="text" id='deleteKey'/>
+    <button onclick="query('delete')">Удалить</button><br/>
+    <div>
+        <iframe src="http://localhost:3000/" id='domainTwo' width="800" height="400">DomainTwo</iframe>
+    </div>
+    <script>
+        var domainTwo = document.getElementById('domainTwo').contentWindow;
+        let currentData='';
+
+        window.onmessage = function(e){
+            switch (e.data.type) {
+                case 'string':
+                    currentData=e.data.data
+                    console.log('Данные получены', currentData)
+                    break;
+                
+                case 'function':
+                    let value = e.data.value;
+                    let args = e.data.args
+                    func(value,args);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        function func(callback, args){
+            eval('('+callback+')(args);');
+        }
+
+       function query(method){
+           let key=''; data='';
+           switch (method) {
+               case 'set':
+                    key = document.getElementById('addKey').value;
+                    data = document.getElementById('addData').value;
+                   break;
+                
+                case 'get':
+                    key = document.getElementById('getKey').value;
+                    break;
+
+                case 'delete':
+                    key = document.getElementById('deleteKey').value;
+                    break;
+           
+               default:
+                   break;
+           }
+           const obj={
+               method,
+               key,
+               data
+           }
+            domainTwo.postMessage(JSON.stringify(obj), "*");
+            document.getElementById('deleteKey').value='';
+            document.getElementById('addKey').value='';
+            document.getElementById('addData').value='';
+            document.getElementById('getKey').value='';
+
+       }
+
+    </script>
+</body>
+</html>
